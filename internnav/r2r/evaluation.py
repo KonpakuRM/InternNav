@@ -147,15 +147,13 @@ class FailureAttribution:
     details: List[dict] = field(default_factory=list)
 
 
-def attribute_failures(log_dir: str, results_file: str, connectivity: ConnectivityCache) -> FailureAttribution:
+def attribute_failures(results_file: str) -> FailureAttribution:
     """Coarse failure attribution from executor logs for failed episodes.
 
     - stop: agent passed within success distance of the goal but stopped elsewhere
       (or never stopped).
-    - matching / perception: currently distinguished by whether the chosen
-      candidate disagreed with the pixel-ray direction (matching) or the pixel
-      goal itself pointed away from the ground-truth path (perception, requires
-      manual inspection of logged frames).
+    - matching / perception: bucketed together; distinguishing them requires
+      manual inspection of the per-step JSONL logs (pixel vs candidate rays).
     """
     attribution = FailureAttribution()
     with open(results_file) as f:

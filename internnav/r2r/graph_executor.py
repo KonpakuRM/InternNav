@@ -210,6 +210,7 @@ class R2RGraphExecutor:
                     self._log(log_file, record)
                     state = self._goto(state, best, result, visit_counts)
                     result.steps += 1
+                    view_adjustments = 0
                     goal_dist_after = float(np.linalg.norm(pending_goal - graph.position(state.viewpoint)))
                     if reached or pending_hops <= 0 or goal_dist_after >= goal_dist_before:
                         pending_goal, pending_hops = None, 0
