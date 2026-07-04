@@ -10,7 +10,7 @@ import os
 
 import numpy as np
 
-from internnav.r2r.connectivity import GraphState
+from internnav.r2r.connectivity import ConnectivityCache, GraphState
 from internnav.r2r.providers.base import Observation, VisualProvider
 from internnav.r2r.utils import camera_pose_from_state
 
@@ -89,12 +89,14 @@ class PrerenderedProvider(VisualProvider):
     def __init__(
         self,
         cache_dir: str,
+        connectivity_dir: str,
         width: int = 640,
         height: int = 480,
         hfov: float = 90.0,
         num_headings: int = 12,
     ):
         self.cache_dir = cache_dir
+        self.connectivity = ConnectivityCache(connectivity_dir)
         self.num_headings = num_headings
         self.intrinsic = build_intrinsic(width, height, hfov)
 
@@ -122,5 +124,6 @@ class PrerenderedProvider(VisualProvider):
 
         snapped = self.snapped_state(state)
         rgb = np.asarray(Image.open(self._frame_path(state)).convert('RGB'))
-        cam_to_world = camera_pose_from_state(np.zeros(3), snapped.heading, snapped.elevation)
+        position = self.connectivity.get(state.scan).position(state.viewpoint)
+        cam_to_world = camera_pose_from_state(position, snapped.heading, snapped.elevation)
         return Observation(rgb=rgb, depth=None, intrinsic=self.intrinsic, cam_to_world=cam_to_world)

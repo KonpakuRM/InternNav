@@ -269,10 +269,9 @@ class R2RGraphExecutor:
 
                 # ---- pixel goal ----
                 row, col = float(plan.pixel[0]), float(plan.pixel[1])
-                pixel_bearing_cam, pixel_elev_cam = pixel_to_bearing_elevation(row, col, obs.intrinsic)
-                # Bearing/elevation of the pixel ray relative to the agent's level heading.
-                pixel_bearing = pixel_bearing_cam
-                pixel_elevation = normalize_angle(pixel_elev_cam + state.elevation)
+                # Pixel ray relative to the current camera axis; candidates'
+                # rel_heading/rel_elevation share the same reference frame.
+                pixel_bearing, pixel_elevation = pixel_to_bearing_elevation(row, col, obs.intrinsic)
                 record['pixel'] = [row, col]
 
                 goal_world = self._unproject_goal(plan, obs)

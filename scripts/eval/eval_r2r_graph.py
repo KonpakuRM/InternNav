@@ -43,6 +43,7 @@ def build_provider(cfg: dict):
 
         return PrerenderedProvider(
             cache_dir=provider_cfg['pre_render_dir'],
+            connectivity_dir=cfg['data']['connectivity_dir'],
             width=provider_cfg['width'],
             height=provider_cfg['height'],
             hfov=provider_cfg['hfov'],
