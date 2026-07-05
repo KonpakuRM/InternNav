@@ -186,10 +186,11 @@ class InternVLAN1Net(PreTrainedModel):
             pixel_goal = [int(coord[1]), int(coord[0])]
             output.output_pixel = np.array(pixel_goal)
 
-            image_grid_thw = torch.cat([thw.unsqueeze(0) for thw in inputs.image_grid_thw], dim=0)
-            with torch.no_grad():
-                traj_latents = self.model.generate_latents(output_ids, inputs.pixel_values, image_grid_thw)
-            output.output_latent = traj_latents
+            if getattr(self.model.get_model(), 'latent_queries', None) is not None:
+                image_grid_thw = torch.cat([thw.unsqueeze(0) for thw in inputs.image_grid_thw], dim=0)
+                with torch.no_grad():
+                    traj_latents = self.model.generate_latents(output_ids, inputs.pixel_values, image_grid_thw)
+                output.output_latent = traj_latents
 
         else:  # Output action
             action_seq = self.parse_actions(self.llm_output)

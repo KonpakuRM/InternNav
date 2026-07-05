@@ -54,7 +54,8 @@ def build_provider(cfg: dict):
 def build_policy(cfg: dict):
     from internnav.model import get_config, get_policy
 
-    model_cfg = cfg['model']
+    model_cfg = dict(cfg['model'])
+    model_cfg.setdefault('state_encoder', None)
     policy_cls = get_policy(model_cfg['policy_name'])
     config_cls = get_config(model_cfg['policy_name'])
     policy = policy_cls(config=config_cls(model_cfg={'model': model_cfg}))

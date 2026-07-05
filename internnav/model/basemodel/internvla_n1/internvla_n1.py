@@ -165,10 +165,10 @@ class InternVLAN1ForCausalLM(Qwen2_5_VLForConditionalGeneration, InternVLAN1Meta
 
             n_traj_tokens = (input_ids == TRAJ_TOKEN_INDEX).sum().item()
             traj_idx = input_ids == TRAJ_TOKEN_INDEX
-            latent_queries = self.get_model().latent_queries.repeat(input_ids.shape[0], 1, 1)
-            H = latent_queries.shape[-1]
-            latent_queries = latent_queries.contiguous().view(-1, H)
             if n_traj_tokens != 0:
+                latent_queries = self.get_model().latent_queries.repeat(input_ids.shape[0], 1, 1)
+                H = latent_queries.shape[-1]
+                latent_queries = latent_queries.contiguous().view(-1, H)
                 inputs_embeds[traj_idx] = latent_queries
 
             if attention_mask is not None:
